@@ -23,6 +23,7 @@ import SharePanel from '@/components/SharePanel';
 import ViewPresets from '@/components/ViewPresets';
 import KeyboardShortcuts from '@/components/KeyboardShortcuts';
 import GlobalStatusBar from '@/components/GlobalStatusBar';
+import BackgroundAudio from '@/components/BackgroundAudio';
 import LiveAlerts from '@/components/LiveAlerts';
 import WorldRemote from '@/components/WorldRemote';
 import ArcGISPanel from '@/components/ArcGISPanel';
@@ -1716,6 +1717,7 @@ export default function Dashboard() {
         )}
       </motion.div>
 
+      <BackgroundAudio />
       <TugrulWorkspace onFlyTo={location => {
         autoLocateCancelled.current = true;
         setFlyToLocation({ ...location, duration: 1800, ts: Date.now() });

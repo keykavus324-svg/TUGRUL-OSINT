@@ -131,7 +131,7 @@ export default function SharePanel({ mapView, activeLayers, mouseCoords }: Share
             {/* Quick Share */}
             <div className="flex gap-2">
               <a
-                href={`https://twitter.com/intent/tweet?text=${encodeURIComponent('🏛️ OSIRIS — Global Intelligence Dashboard')}&url=${encodeURIComponent(generateShareUrl())}`}
+                href={`https://twitter.com/intent/tweet?text=${encodeURIComponent('TUĞRUL OSİNT — Açık Kaynak İstihbarat')}&url=${encodeURIComponent(generateShareUrl())}`}
                 target="_blank"
                 className="flex-1 text-center py-1.5 rounded text-[9px] font-mono tracking-wider text-[var(--text-muted)] border border-[var(--border-primary)] hover:border-[#1DA1F2] hover:text-[#1DA1F2] transition-colors"
               >

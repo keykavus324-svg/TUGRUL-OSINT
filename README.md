@@ -43,3 +43,7 @@ Araştırma notları yalnızca tarayıcının localStorage alanında saklanır; 
 ## v0.2 araştırma deneyimi
 
 Sekmeli araştırma merkezi, resmi kaynak rehberi, kaynak alanı sayaçları, dosya içi Türkçe arama, güvenli JSON içe aktarma (2 MB / 200 bulgu), kimlik bazlı tekrar önleme ve Markdown raporları eklendi. Ctrl/Cmd+J araştırma merkezini açar; Escape kapatır. Kaldırma işlemi onay gerektirir. Harita katman adları Türkçeleştirildi; bu tam uygulama çevirisi değildir.
+
+## Yerel arka plan müziği
+
+Sol alttaki **Arka Plan Müziği** düğmesinden kendi ses dosyalarınızı seçebilirsiniz. Birden çok parça, sonraki parça, duraklatma, ses seviyesi ve sessize alma desteklenir; liste döngüde çalar. Dosyalar sunucuya yüklenmez ve sayfa yenilendiğinde seçim sıfırlanır. En fazla 30 dosya, dosya başına 100 MB. Tarayıcı desteklediği ses biçimlerini oynatır ve ilk başlatmada kullanıcı etkileşimi gerekebilir. Siteyle birlikte ticari müzik dağıtılmaz.
