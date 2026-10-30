@@ -47,3 +47,7 @@ Sekmeli araştırma merkezi, resmi kaynak rehberi, kaynak alanı sayaçları, do
 ## Yerel arka plan müziği
 
 Sol alttaki **Arka Plan Müziği** düğmesinden kendi ses dosyalarınızı seçebilirsiniz. Birden çok parça, sonraki parça, duraklatma, ses seviyesi ve sessize alma desteklenir; liste döngüde çalar. Dosyalar sunucuya yüklenmez ve sayfa yenilendiğinde seçim sıfırlanır. En fazla 30 dosya, dosya başına 100 MB. Tarayıcı desteklediği ses biçimlerini oynatır ve ilk başlatmada kullanıcı etkileşimi gerekebilir. Siteyle birlikte ticari müzik dağıtılmaz.
+
+### Hazır YouTube müziği
+
+Kullanıcının seçtiği `WtAfwXGd_ms` videosu ve `PLqjYw0NUCsdqIRE_HMy0aXpYq3bdrg0p7` listesi müzik panelinde hazırdır. Her girişte dosya seçimi gerekmez. Resmi, görünür YouTube gizlilik geliştirilmiş iframe oynatıcısı kullanılır; indirme, ses ayırma veya yeniden barındırma yapılmaz. YouTube bağlantısı yalnızca başlatma düğmesine basıldıktan sonra yüklenir. Otomatik oynatma tarayıcı politikasına, erişim video sahibinin gömme ve bölge izinlerine bağlıdır. Panel kapandığında YouTube oynatıcısı kaldırılır ve ses durur. Bu, görünmez veya ekran kapalı YouTube oynatma uygulaması değildir.
