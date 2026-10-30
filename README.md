@@ -47,3 +47,9 @@ Sekmeli araştırma merkezi, resmi kaynak rehberi, kaynak alanı sayaçları, do
 ## Arka plan müziği
 
 Kullanıcının yüklediği `public/videoplayback.mp3` doğrudan, %30 sesle ve döngüde oynatılır. Müzik sekmesi, dosya seçimi veya YouTube oynatıcısı yoktur. Sayfa açılırken otomatik oynatma denenir; tarayıcı izin vermezse ilk tıklama/dokunma veya tuş etkileşiminde yeniden denenir. Bu nedenle etkileşimsiz sesli başlangıç her tarayıcıda garanti edilmez. Sol alttaki küçük ses düğmesi müziği durdurur/başlatır. Kullanıcı düğmeyle durdurduğunda sonraki sayfa etkileşimleri müziği tekrar başlatmaz. Sayfa yenilendiğinde başlangıç yeniden denenir. Ses dosyası artık sitenin herkese açık statik içeriğidir.
+
+## v0.3 · TUĞRUL Command arayüzü
+
+Özgün grafit/turkuaz uygulama kabuğu, ana gezinme ve arama düğmesi, gerçek yüklenen kayıtlardan üretilen sayaçlar, isimleri görünür sol katman paneli, çerçeveli harita, kaynak bağlantılı üç kayıtlık sismik özet ve yeni başlangıç ekranı. Panel gizleme, bölgeye gitme ve mevcut araç bağlantıları korunur. Harita hazır olmadan gösterilen Natural Earth dünya çizimi açıkça **coğrafi referans / canlı olmayan** bekleme görünümü olarak etiketlenir. Bu çizim interaktif haritanın yerine geçmiş gibi gösterilmez. Mobilde katmanlar ve araçlar alt gezinmeden açılır.
+
+Tarayıcı kontrolü: masaüstünde katman açma, araştırma bulgusu kaydetme, sayfa hataları; 390 px mobilde yatay taşma ve MP3 kaynağının korunması denetlendi. Geliştirme ağındaki dış servis engelleri nedeniyle canlı altlık burada uçtan uca doğrulanamaz.

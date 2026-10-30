@@ -24,6 +24,7 @@ import ViewPresets from '@/components/ViewPresets';
 import KeyboardShortcuts from '@/components/KeyboardShortcuts';
 import GlobalStatusBar from '@/components/GlobalStatusBar';
 import BackgroundAudio from '@/components/BackgroundAudio';
+import {CommandCenter, SignalBrief} from '@/components/CommandCenter';
 import LiveAlerts from '@/components/LiveAlerts';
 import WorldRemote from '@/components/WorldRemote';
 import ArcGISPanel from '@/components/ArcGISPanel';
@@ -159,11 +160,11 @@ const newsTransform = (d: { news?: unknown[]; sources?: unknown[]; timestamp?: s
 });
 
 /* One version label for the splash and the header, which used to disagree. */
-const APP_VERSION = 'V5.0';
+const APP_VERSION = 'TUĞRUL / 0.3';
 
 /* The splash reports what has actually happened. The last stage waits for
    the map's first finished frame instead of a fixed timer. */
-const SPLASH_STAGES = ['ESTABLISHING SECURE CONNECTION...', 'INITIALIZING FEEDS...', 'CALIBRATING SENSORS...', 'SYSTEM READY'];
+const SPLASH_STAGES = ['ÇALIŞMA ALANI HAZIRLANIYOR', 'VERİ KAYNAKLARI BAĞLANIYOR', 'HARİTA BAŞLATILIYOR', 'GÖZLEM MERKEZİ HAZIR'];
 const SPLASH_PROGRESS = ['25%', '50%', '78%', '100%'];
 
 /* The HUD enters as one sequence when the splash lifts. Each piece used to
@@ -203,6 +204,7 @@ export default function Dashboard() {
   const [activeCamera, setActiveCamera] = useState<any>(null);
   const [spaceWeather, setSpaceWeather] = useState<any>(null);
   const [showLayers, setShowLayers] = useState(true);
+  const [showSignalBrief,setShowSignalBrief] = useState(true);
   const [showMarkets, setShowMarkets] = useState(false);
   /* The Markets panel is pinned just below the header rather than centred on
      its rail button. Centred, a tall panel (a chart open, a long list) rose
@@ -1335,202 +1337,21 @@ export default function Dashboard() {
 
 
   return (
-    <main className="fixed inset-0 w-full h-full bg-[var(--bg-void)] overflow-hidden">
+    <main data-layer-rail={showLayers?'open':'closed'} className="tg-console fixed inset-0 w-full h-full bg-[var(--bg-void)] overflow-hidden">
 
-      {/* ── SPLASH ── */}
       <AnimatePresence onExitComplete={() => setSplashGone(true)}>
-        {showSplash && (
-          <motion.div
-            initial={{ opacity: 1 }}
-            // A slight push-through as it fades: the splash gives way to the globe
-            // behind it instead of just dissolving.
-            exit={{ opacity: 0, scale: 1.04 }}
-            transition={{ duration: 0.7, ease: [0.4, 0, 0.2, 1] }}
-            className="absolute inset-0 z-[999] flex flex-col items-center justify-center overflow-hidden"
-            style={{ background: 'radial-gradient(ellipse at center, #0a0a14 0%, var(--bg-void) 70%)' }}
-          >
-            {/* ── Scanline CRT overlay ── */}
-            <div className="absolute inset-0 pointer-events-none z-[1]" style={{
-              backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(212,175,55,0.015) 2px, rgba(212,175,55,0.015) 4px)',
-              animation: 'splashScanDrift 8s linear infinite',
-            }} />
-
-            {/* ── Version badge — top-left ── */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 0.6 }}
-              transition={{ delay: 0.8, duration: 0.5 }}
-              className="absolute top-6 left-6 z-[2] font-mono text-[11px] tracking-[0.3em] text-[var(--gold-primary)]"
-            >
-              {APP_VERSION}
-            </motion.div>
-
-
-
-            {/* ── Geometric tactical logo ── */}
-            <div className="relative w-40 h-40 mb-8 flex items-center justify-center z-[2]">
-              {/* Outer ring — slow clockwise */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.6, rotate: 0 }}
-                animate={{ opacity: 1, scale: 1, rotate: 360 }}
-                transition={{ opacity: { duration: 0.6 }, scale: { duration: 0.8, ease: 'easeOut' }, rotate: { duration: 20, repeat: Infinity, ease: 'linear' } }}
-                className="absolute inset-0 rounded-full"
-                style={{ border: '1px solid rgba(212,175,55,0.2)' }}
-              >
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full" style={{ background: 'var(--gold-primary)', boxShadow: '0 0 12px var(--gold-primary), 0 0 24px rgba(212,175,55,0.3)' }} />
-                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-1 h-1 rounded-full" style={{ background: 'rgba(212,175,55,0.5)', boxShadow: '0 0 6px rgba(212,175,55,0.3)' }} />
-              </motion.div>
-
-              {/* Middle ring — faster counter-clockwise */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.4, rotate: 0 }}
-                animate={{ opacity: 1, scale: 1, rotate: -360 }}
-                transition={{ opacity: { duration: 0.6, delay: 0.15 }, scale: { duration: 0.8, delay: 0.15, ease: 'easeOut' }, rotate: { duration: 12, repeat: Infinity, ease: 'linear' } }}
-                className="absolute rounded-full"
-                style={{ inset: '18px', border: '1px solid rgba(0,229,255,0.15)' }}
-              >
-                <div className="absolute top-1/2 right-0 translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full" style={{ background: 'var(--cyan-primary)', boxShadow: '0 0 10px var(--cyan-primary), 0 0 20px rgba(0,229,255,0.2)' }} />
-                <div className="absolute bottom-0 left-1/4 translate-y-1/2 w-1 h-1 rounded-full" style={{ background: 'rgba(0,229,255,0.4)' }} />
-              </motion.div>
-
-              {/* Inner ring — fastest clockwise */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.2, rotate: 0 }}
-                animate={{ opacity: 1, scale: 1, rotate: 360 }}
-                transition={{ opacity: { duration: 0.6, delay: 0.3 }, scale: { duration: 0.8, delay: 0.3, ease: 'easeOut' }, rotate: { duration: 7, repeat: Infinity, ease: 'linear' } }}
-                className="absolute rounded-full"
-                style={{ inset: '40px', border: '1px solid rgba(212,175,55,0.25)' }}
-              >
-                <div className="absolute top-0 left-1/4 -translate-y-1/2 w-1.5 h-1.5 rounded-full" style={{ background: 'var(--gold-primary)', boxShadow: '0 0 8px var(--gold-primary)' }} />
-              </motion.div>
-
-              {/* Core circle + crosshair */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.4, duration: 0.6, ease: [0.34, 1.56, 0.64, 1] }}
-                className="relative w-12 h-12 rounded-full flex items-center justify-center"
-                style={{ border: '2px solid var(--gold-primary)', boxShadow: '0 0 20px rgba(212,175,55,0.15), inset 0 0 20px rgba(212,175,55,0.05)' }}
-              >
-                <motion.div
-                  animate={{ opacity: [0.3, 0.8, 0.3] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-                  className="w-5 h-5 rounded-full"
-                  style={{ background: 'radial-gradient(circle, rgba(212,175,55,0.4) 0%, rgba(212,175,55,0.05) 70%)' }}
-                />
-                {/* Crosshair lines */}
-                <div className="absolute w-[1px] h-full" style={{ background: 'linear-gradient(to bottom, transparent, rgba(212,175,55,0.3), transparent)' }} />
-                <div className="absolute w-full h-[1px]" style={{ background: 'linear-gradient(to right, transparent, rgba(212,175,55,0.3), transparent)' }} />
-              </motion.div>
-
-              {/* Faint pulsing radar sweep */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: [0, 0.15, 0], rotate: [0, 360] }}
-                transition={{ opacity: { duration: 3, repeat: Infinity }, rotate: { duration: 3, repeat: Infinity, ease: 'linear' }, delay: 0.6 }}
-                className="absolute inset-[10px] rounded-full"
-                style={{ background: 'conic-gradient(from 0deg, transparent 0deg, rgba(212,175,55,0.15) 40deg, transparent 80deg)' }}
-              />
-            </div>
-
-            {/* ── OSIRIS title — letter-by-letter stagger ── */}
-            <div className="flex items-center gap-[2px] mb-3 z-[2]">
-              {'TUĞRUL'.split('').map((letter, i) => (
-                <motion.span
-                  key={i}
-                  initial={{ opacity: 0, y: 20, filter: 'blur(8px)' }}
-                  animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-                  transition={{ delay: 0.5 + i * 0.08, duration: 0.5, ease: 'easeOut' }}
-                  className="text-4xl md:text-5xl font-bold tracking-[0.5em] font-mono"
-                  style={{ color: 'var(--text-heading)', textShadow: '0 0 30px rgba(212,175,55,0.2)' }}
-                >
-                  {letter}
-                </motion.span>
-              ))}
-            </div>
-
-            {/* ── Subtitle — typewriter reveal ── */}
-            <div className="overflow-hidden mb-8 z-[2]">
-              <motion.div
-                initial={{ width: 0 }}
-                animate={{ width: '100%' }}
-                transition={{ delay: 1.2, duration: 0.8, ease: 'easeInOut' }}
-                className="overflow-hidden whitespace-nowrap"
-              >
-                <p className="text-[11px] md:text-[10px] font-mono tracking-[0.5em] text-[var(--gold-primary)]" style={{ opacity: 0.8 }}>
-                  TÜRKİYE ODAKLI KÜRESEL İSTİHBARAT
-                </p>
-              </motion.div>
-            </div>
-
-            {/* ── Multi-stage progress bar ── */}
-            <div className="w-64 md:w-80 z-[2]">
-              {/* Thin progress track */}
-              <div className="relative w-full h-[2px] rounded-full overflow-hidden" style={{ background: 'rgba(212,175,55,0.1)' }}>
-                <motion.div
-                  initial={{ width: '0%' }}
-                  animate={{ width: SPLASH_PROGRESS[splashStage] }}
-                  transition={{ duration: 0.55, delay: splashStage === 0 ? 0.5 : 0, ease: 'easeInOut' }}
-                  className="absolute inset-y-0 left-0 rounded-full"
-                  style={{ background: 'linear-gradient(90deg, var(--gold-primary), var(--cyan-primary), var(--gold-primary))', boxShadow: '0 0 12px rgba(212,175,55,0.4)' }}
-                />
-              </div>
-
-              {/* Status message — one line, swapped as each stage is reached */}
-              <div className="mt-3 h-4 flex items-center justify-center">
-                <AnimatePresence mode="wait">
-                  <motion.span
-                    key={splashStage}
-                    initial={{ opacity: 0, y: 3 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -3 }}
-                    transition={{ duration: 0.18, delay: splashStage === 0 ? 0.5 : 0 }}
-                    className="text-[10px] font-mono tracking-[0.25em]"
-                    style={{ color: splashStage === 3 ? 'var(--cyan-primary)' : 'var(--text-muted)' }}
-                  >
-                    {SPLASH_STAGES[splashStage]}
-                  </motion.span>
-                </AnimatePresence>
-              </div>
-            </div>
-
-            {/* ── Decorative grid lines ── */}
-            <div className="absolute inset-0 pointer-events-none z-[0]" style={{ opacity: 0.03 }}>
-              <div className="absolute inset-0" style={{
-                backgroundImage: 'linear-gradient(rgba(212,175,55,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(212,175,55,0.5) 1px, transparent 1px)',
-                backgroundSize: '60px 60px',
-              }} />
-            </div>
-
-            {/* ── Corner frame accents ── */}
-            {[
-              { t: '10px', l: '10px', bw: '2px 0 0 2px' },
-              { t: '10px', r: '10px', bw: '2px 2px 0 0' },
-              { b: '10px', l: '10px', bw: '0 0 2px 2px' },
-              { b: '10px', r: '10px', bw: '0 2px 2px 0' },
-            ].map((pos, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 0.3 }}
-                transition={{ delay: 0.8 + i * 0.1, duration: 0.5 }}
-                className="absolute w-8 h-8 z-[2]"
-                style={{ top: pos.t, bottom: pos.b, left: pos.l, right: pos.r, borderWidth: pos.bw, borderStyle: 'solid', borderColor: 'var(--gold-primary)' }}
-              />
-            ))}
-
-
-
-            {/* ── Inline keyframe for scanline drift ── */}
-
-          </motion.div>
-        )}
+        {showSplash && <motion.div className="tg-boot-screen" initial={{opacity:1}} exit={{opacity:0}} transition={{duration:.45}}>
+          <div className="tg-boot-grid"/><div className="tg-boot-label">TUĞRUL INTELLIGENCE SYSTEM / 0.3</div>
+          <div className="tg-boot-logo"><Radar size={55} strokeWidth={.8}/></div>
+          <div className="tg-boot-eyebrow">AÇIK KAYNAK. GENİŞ PERSPEKTİF.</div><h1>TUĞRUL<span>OSİNT</span></h1>
+          <p>Görünenden fazlasını keşfet.</p><div className="tg-boot-progress"><motion.i animate={{width:SPLASH_PROGRESS[splashStage]}}/></div>
+          <div className="tg-boot-status"><span>{SPLASH_STAGES[splashStage]}</span><span>{SPLASH_PROGRESS[splashStage]}</span></div>
+          <div className="tg-boot-footer">GEOINT / AÇIK KAYNAK ARAŞTIRMA ÇALIŞMA ALANI</div>
+        </motion.div>}
       </AnimatePresence>
 
-
-
       {/* ── MAP ── */}
-      <ErrorBoundary name="Map">
+      <div className="tg-map-stage"><ErrorBoundary name="Map">
         <OsirisMap 
           key={osirisTheme}
           data={data} 
@@ -1579,6 +1400,8 @@ export default function Dashboard() {
           oiHighlight={oiHighlight}
         />
       </ErrorBoundary>
+      {!mapReady&&<div className="tg-map-wait" role="status"><img src="/tugrul-globe.svg" alt="Dünya coğrafi referans görünümü"/><div><span className="tg-wait-pulse"/><b>HARİTA BAĞLANTISI BEKLENİYOR</b><p>Altlık ve veri kaynakları hazırlanıyor. Ağ erişimi sınırlıysa yükleme gecikebilir.</p><small>Natural Earth · Coğrafi referans · Canlı olay gösterimi değildir</small></div></div>}
+      </div>
 
       {/* ── OI: what the pointer is over on the globe ── */}
       {oiHover && !isMobile && (
@@ -1696,7 +1519,7 @@ export default function Dashboard() {
       <motion.div
         data-hud
         initial={{ opacity: 0, y: 20 }} animate={revealed ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }} transition={hudIn(0.45)}
-        className="absolute bottom-[75px] md:bottom-[100px] z-[200] flex flex-col gap-1.5 pointer-events-none"
+        className="tg-view-controls absolute bottom-[75px] md:bottom-[100px] z-[200] flex flex-col gap-1.5 pointer-events-none"
         style={{ left: isMobile ? '12px' : '120px' }}
       >
         {/* Unified Control Strip */}
@@ -1722,64 +1545,12 @@ export default function Dashboard() {
         autoLocateCancelled.current = true;
         setFlyToLocation({ ...location, duration: 1800, ts: Date.now() });
       }} />
-      {/* ── HEADER ── */}
-      <motion.div data-hud initial={{ opacity: 0, y: -20 }} animate={revealed ? { opacity: 1, y: 0 } : { opacity: 0, y: -20 }} transition={hudIn(0.15)} className={`absolute top-4 z-[200] pointer-events-none flex flex-col`} style={{ left: isMobile ? '24px' : '64px', right: '24px' }}>
-        <div className="flex items-center gap-3 w-fit">
-          <div className="tg-main-mark"><Radar size={29} strokeWidth={1.3}/></div>
-          <div className="flex flex-col items-start gap-0.5">
-            <h1 className="text-lg md:text-xl font-bold tracking-[0.4em] text-[#D4AF37] font-mono">TUĞRUL OSİNT</h1>
-            <span className="text-[9px] md:text-[10px] font-mono tracking-[0.2em] opacity-80 uppercase text-[#D4AF37]">AÇIK KAYNAK İSTİHBARAT</span>
-          </div>
-        </div>
-        <div className="flex items-center gap-3 mt-1.5 pl-[44px] min-w-0 pr-4">
-          <span className="text-[9px] md:text-[9px] text-[var(--text-muted)] font-mono tracking-[0.2em] md:tracking-[0.3em] uppercase opacity-40 truncate">
-            KÜRESEL DURUM FARKINDALIĞI <span className="hidden md:inline">· HAVACILIK · DENİZCİLİK · UYDU · ÇEVRE · SİBER</span>
-          </span>
-        </div>
-      </motion.div>
-
-
-      {/* ── TOP-RIGHT STATUS (desktop) ── */}
-      <motion.div data-hud initial={{ opacity: 0 }} animate={{ opacity: revealed ? 1 : 0 }} transition={hudIn(0.35)} className="status-bar-desktop absolute top-4 right-6 z-[200] pointer-events-none flex items-center gap-3 text-[10px] font-mono tracking-widest text-[var(--text-muted)]">
-
-        <span className="hidden lg:inline-flex items-center gap-1.5">
-          <ZuluClock />
-        </span>
-
-        <span className="flex items-center gap-1" title="Backend connection status">STATUS: <span className={backendStatus === 'connected' ? 'text-[var(--alert-green)]' : 'text-[var(--alert-red)]'}>{backendStatus === 'connected' ? 'LIVE' : backendStatus.toUpperCase()}</span></span>
-
-        <span className="hidden lg:inline-flex items-center gap-1" title="Number of active data layers">
-          <span className="text-[var(--cyan-primary)] font-bold">{Object.values(activeLayers).filter(Boolean).length}</span>
-          <span className="opacity-60">LAYERS</span>
-        </span>
-
-        <span className="hidden lg:inline-flex items-center gap-1" title="Tracked entities on map">
-          <ActiveEntityCount data={data} />
-          <span className="opacity-60">ENTITIES</span>
-        </span>
-
-        {spaceWeather && <span className="hidden lg:inline" title={spaceWeather.kp_index == null ? 'Geomagnetic Storm Index — no reading from NOAA' : `Geomagnetic Storm Index — Kp${spaceWeather.kp_index}`}>SOLAR: <span style={{ color: spaceWeather.storm_color, fontWeight: 700 }}>{spaceWeather.kp_index == null ? 'N/A' : `Kp${spaceWeather.kp_index}`}</span></span>}
-
-        <span className="text-[11px] font-bold tracking-[0.2em] text-[var(--text-muted)] opacity-50">{APP_VERSION}</span>
-        
-        
-
-        
-      </motion.div>
-
-      {/* ── MOBILE: Compact top status ── */}
-      {/* The route planner claims the top of a phone screen; leaving this in
-          place would put the support badge underneath the destination field. */}
-      {isMobile && !showDirections && !navSession && (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: revealed ? 1 : 0 }} transition={hudIn(0.35)} className="absolute top-3 right-3 z-[200] pointer-events-auto flex flex-col items-end gap-1.5">
-          <div className="flex items-center gap-2">
-            
-            
-          </div>
-        </motion.div>
-      )}
-
-
+      <CommandCenter layers={Object.values(activeLayers).filter(Boolean).length} cameras={data.cameras?.length||0} quakes={data.earthquakes?.length||0} status={backendStatus}
+        signalsOpen={showSignalBrief} onSignals={()=>setShowSignalBrief(p=>!p)}
+        onHome={()=>{autoLocateCancelled.current=true;setFlyToLocation({lat:39,lng:35,zoom:5.5,ts:Date.now()});}}
+        onLayers={()=>{if(isMobile)setMobilePanel('layers');else setShowLayers(p=>!p);}}
+        onSearch={()=>{if(isMobile)setMobilePanel('search');else setShowDesktopSearch(p=>!p);}}/>
+      {showSignalBrief&&!isMobile&&!showIntel&&!showOi&&!showMarkets&&!showAlerts&&!showDrawing&&!showDesktopSearch&&!showSpaceCam&&<SignalBrief quakes={data.earthquakes||[]} onClose={()=>setShowSignalBrief(false)} onLocate={(lat,lng)=>{autoLocateCancelled.current=true;setFlyToLocation({lat,lng,zoom:8,ts:Date.now()});}}/>}
 
       {/* ── NEW SIDEBAR (Root Level) ── */}
       {showLayers && !isMobile && <div data-hud><LayerPanel {...terrainPanelProps} revealed={revealed} data={data} activeLayers={activeLayers} setActiveLayers={setActiveLayers} theme={osirisTheme} setTheme={setOsirisTheme} capabilities={capabilities} liveStatus={layerLiveStatus} /></div>}
@@ -1787,7 +1558,7 @@ export default function Dashboard() {
 
 
       {/* ── RIGHT TOOL STRIP (desktop only — mobile uses bottom nav) ── */}
-      {!isMobile && <motion.div data-hud initial={{ opacity: 0, x: 12 }} animate={revealed ? { opacity: 1, x: 0 } : { opacity: 0, x: 12 }} transition={hudIn(0.3)} className="absolute right-2 top-1/2 -translate-y-1/2 flex flex-col items-center gap-2 z-[250] pointer-events-auto bg-black/40 backdrop-blur-sm p-1 rounded-full border border-white/5">
+      {!isMobile && <motion.div data-hud initial={{ opacity: 0, x: 12 }} animate={revealed ? { opacity: 1, x: 0 } : { opacity: 0, x: 12 }} transition={hudIn(0.3)} className="tg-tool-rail absolute right-2 top-1/2 -translate-y-1/2 flex flex-col items-center gap-2 z-[250] pointer-events-auto bg-black/40 backdrop-blur-sm p-1 rounded-full border border-white/5">
         <div className="relative group">
           <button onClick={() => { setShowIntel(!showIntel); setShowOi(false); setShowMarkets(false); setShowAlerts(false); }} className={`relative w-8 h-8 rounded-full flex items-center justify-center transition-all focus:outline-none focus-visible:ring-1 focus-visible:ring-white/50 border duration-200 ${showIntel ? 'bg-[var(--gold-primary)]/20 border-[var(--gold-primary)]/70 shadow-[0_0_18px_rgba(var(--gold-rgb),0.35)]' : 'bg-[var(--gold-primary)]/[0.07] border-[var(--gold-primary)]/35 hover:bg-[var(--gold-primary)]/15 hover:border-[var(--gold-primary)]/60 hover:shadow-[0_0_14px_rgba(var(--gold-rgb),0.25)]'}`} title="OSINT Recon — IP lookup, network sweep, geolocation" aria-label="OSINT Recon" aria-expanded={showIntel}>
             <Radar className={`w-4 h-4 ${showIntel ? 'text-[var(--gold-light)]' : 'text-[var(--gold-primary)]'}`} />
@@ -2229,7 +2000,7 @@ export default function Dashboard() {
 
       {/* ── BOTTOM CURSOR INFO (desktop) ── */}
       {!isMobile && (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: revealed ? 1 : 0 }} transition={hudIn(0.6)} className="desktop-only absolute bottom-8 z-[200] pointer-events-auto" style={{ left: '72px' }}>
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: revealed ? 1 : 0 }} transition={hudIn(0.6)} className="tg-cursor-bar desktop-only absolute bottom-8 z-[200] pointer-events-auto" style={{ left: '72px' }}>
           <div className="flex items-center gap-5 text-[9px] font-mono tracking-widest text-[var(--text-muted)] opacity-60">
             <div className="flex gap-2 items-center" title="Cursor coordinates (hover over map)">
               <span>CURSOR</span>

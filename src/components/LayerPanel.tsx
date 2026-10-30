@@ -319,7 +319,7 @@ function LayerPanel({ data, activeLayers, setActiveLayers, isMobile, theme = 'co
                   </button>
                 );
               })}
-              {group.label === 'DISPLAY' && terrainDetails}
+              {group.label === 'GÖRÜNÜM' && terrainDetails}
             </div>
           </div>
         ))}
@@ -369,14 +369,15 @@ function LayerPanel({ data, activeLayers, setActiveLayers, isMobile, theme = 'co
       initial={{ x: -60, opacity: 0 }}
       animate={revealed ? { x: 0, opacity: 1 } : { x: -60, opacity: 0 }}
       transition={{ type: 'spring', damping: 30, stiffness: 200, delay: 0.25 }}
-      className="absolute top-0 left-0 h-full w-[48px] flex flex-col items-center pt-24 pb-6 z-50 pointer-events-auto"
+      className="tg-layer-rail absolute top-0 left-0 h-full w-[48px] flex flex-col items-center pt-24 pb-6 z-50 pointer-events-auto"
       style={{
         background: 'rgba(0,0,0,0.15)',
         backdropFilter: 'blur(24px) saturate(1.2)',
         WebkitBackdropFilter: 'blur(24px) saturate(1.2)',
       }}
     >
-      <div className="flex-1 flex flex-col items-center gap-1">
+      <div className="tg-layer-rail-title"><LayersLabel /></div>
+      <div className="tg-layer-groups flex-1 flex flex-col items-center gap-1">
         {visibleGroups.map((group, index) => {
           /* Sub-layers modify a parent rather than draw anything of their own,
              so they do not count towards the rail's reading. */
@@ -392,7 +393,7 @@ function LayerPanel({ data, activeLayers, setActiveLayers, isMobile, theme = 'co
           return (
             <div
               key={group.label}
-              className="relative flex items-center justify-center"
+              className="tg-layer-group relative flex items-center justify-center"
               onMouseEnter={() => setHoveredGroup(group.label)}
               onMouseLeave={() => setHoveredGroup(null)}
             >
@@ -404,7 +405,7 @@ function LayerPanel({ data, activeLayers, setActiveLayers, isMobile, theme = 'co
                 aria-expanded={isOpen}
                 aria-label={`${group.fullLabel}${activeCount ? ` — ${activeCount} active` : ''}`}
                 title={group.fullLabel}
-                className="relative w-10 h-10 flex items-center justify-center cursor-pointer rounded-lg transition-all duration-300 focus:outline-none focus-visible:ring-1 focus-visible:ring-white/40"
+                className="tg-layer-group-button relative w-10 h-10 flex items-center justify-center cursor-pointer rounded-lg transition-all duration-300 focus:outline-none focus-visible:ring-1 focus-visible:ring-white/40"
                 style={{
                   background: isPinned
                     ? 'rgba(255,255,255,0.10)'
@@ -425,6 +426,7 @@ function LayerPanel({ data, activeLayers, setActiveLayers, isMobile, theme = 'co
                   }}
                 />
 
+                <span className="tg-layer-group-name">{group.label}</span>
                 {/* How many layers in this group are live. Without it the rail
                     gives no reading at all until each icon is hovered in turn. */}
                 {activeCount > 0 && (
@@ -450,7 +452,7 @@ function LayerPanel({ data, activeLayers, setActiveLayers, isMobile, theme = 'co
                     animate={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
                     exit={{ opacity: 0, x: -4, filter: 'blur(2px)' }}
                     transition={{ duration: 0.18, ease: 'easeOut' }}
-                    className={`absolute left-[52px] ${index === 0 ? 'top-0' : 'top-1/2 -translate-y-1/2'} min-w-[220px] rounded-xl p-3 z-[100] pointer-events-auto`}
+                    className={`tg-layer-flyout absolute left-[52px] ${index === 0 ? 'top-0' : 'top-1/2 -translate-y-1/2'} min-w-[220px] rounded-xl p-3 z-[100] pointer-events-auto`}
                     style={{
                       background: 'rgba(0,0,0,0.6)',
                       backdropFilter: 'blur(40px) saturate(1.5)',
@@ -469,7 +471,7 @@ function LayerPanel({ data, activeLayers, setActiveLayers, isMobile, theme = 'co
                         onClick={(e) => { e.stopPropagation(); toggleGroup(group.layers); }}
                         className="px-1.5 py-0.5 rounded text-[10px] font-mono tracking-wider text-white/40 hover:text-white hover:bg-white/10 transition-colors"
                       >
-                        {activeCount > 0 ? 'NONE' : 'ALL'}
+                        {activeCount > 0 ? 'KAPAT' : 'TÜMÜ'}
                       </button>
                       {isPinned && (
                         <button
@@ -510,7 +512,7 @@ function LayerPanel({ data, activeLayers, setActiveLayers, isMobile, theme = 'co
                           </button>
                         );
                       })}
-                      {group.label === 'DISPLAY' && terrainDetails}
+                      {group.label === 'GÖRÜNÜM' && terrainDetails}
                     </div>
                   </motion.div>
                 )}
@@ -569,5 +571,7 @@ function LayerPanel({ data, activeLayers, setActiveLayers, isMobile, theme = 'co
     </motion.div>
   );
 }
+
+function LayersLabel(){return <><span>VERİ KATMANLARI</span><small>ARAŞTIRMA ALANLARI</small></>}
 
 export default memo(LayerPanel);
