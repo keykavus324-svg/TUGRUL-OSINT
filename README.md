@@ -53,3 +53,22 @@ Kullanıcının yüklediği `public/videoplayback.mp3` doğrudan, %30 sesle ve d
 Özgün grafit/turkuaz uygulama kabuğu, ana gezinme ve arama düğmesi, gerçek yüklenen kayıtlardan üretilen sayaçlar, isimleri görünür sol katman paneli, çerçeveli harita, kaynak bağlantılı üç kayıtlık sismik özet ve yeni başlangıç ekranı. Panel gizleme, bölgeye gitme ve mevcut araç bağlantıları korunur. Harita hazır olmadan gösterilen Natural Earth dünya çizimi açıkça **coğrafi referans / canlı olmayan** bekleme görünümü olarak etiketlenir. Bu çizim interaktif haritanın yerine geçmiş gibi gösterilmez. Mobilde katmanlar ve araçlar alt gezinmeden açılır.
 
 Tarayıcı kontrolü: masaüstünde katman açma, araştırma bulgusu kaydetme, sayfa hataları; 390 px mobilde yatay taşma ve MP3 kaynağının korunması denetlendi. Geliştirme ağındaki dış servis engelleri nedeniyle canlı altlık burada uçtan uca doğrulanamaz.
+
+## v0.4 · Analyst Suite — 12 araştırma modülü
+
+Haritanın sağ üstündeki **kutucuklar ikonundan Araç Merkezi** açılır. Varsayılan olarak kapalıdır; mevcut kompakt düzeni ve müziği değiştirmez. Yeni modüller:
+
+1. Araştırma sorgusu: konu, site, dosya türü, tam ifade ve tarih aralığı; Google/Bing/DuckDuckGo pivotları.
+2. Alan adı & IPv4: girdi doğrulama, kullanıcı isteğiyle Google Public DNS sorgusu; RIPEstat/ICANN/crt.sh/arşiv bağlantıları.
+3. Gösterge çıkarıcı: yerel metinden URL, alan adı, IPv4 ve MD5/SHA-1/SHA-256 biçimli ifadeler; defang normalleştirme ve JSON çıktı.
+4. Bağlantı inceleyici: yerel URL çözümleme, takip parametreleri ve fragment temizleme.
+5. Coğrafi araçlar: ondalık koordinat doğrulama, DMS, büyük daire mesafesi, ilk yön açısı ve mevcut haritaya odaklama.
+6. Dosya parmak izi: **dosya yüklemeden** tarayıcıda SHA-256; 20 MB sınırı, JSON kayıt.
+7. İzleme listesi: manuel hedefler, türler, analist notları, arama ve araştırma pivotları; 200 kayıt sınırı. **Otomatik takip/uyarı yok.**
+8. Zaman çizelgesi: kaynaklı manuel olaylar, UTC sıralama ve açıkça analiste ait teyit değerlendirmesi; 300 kayıt sınırı.
+9. Sismik tarayıcı: mevcut yüklenen USGS verisinde büyüklük, zaman ve konum filtreleri; haritaya odaklama ve olay formuna aktarma.
+10. Kaynak kütüphanesi: 26 resmî/açık kaynak bağlantısı ve kategori araması.
+11. Dosya & rapor: JSON yedek, doğrulamalı/birleştirmeli içe aktarma, Markdown raporu, kaynak alan adı dağılımı ve onaylı silme.
+12. Doğrulama masası: oturumluk analist kontrol listesi, Markdown çıktı, UTC → Türkiye/Unix dönüşümü.
+
+Detaylar ve veri sınırları: [Analyst Suite](docs/ANALYST-SUITE.md).
