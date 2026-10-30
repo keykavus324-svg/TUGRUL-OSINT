@@ -204,7 +204,8 @@ export default function Dashboard() {
   const [activeCamera, setActiveCamera] = useState<any>(null);
   const [spaceWeather, setSpaceWeather] = useState<any>(null);
   const [showLayers, setShowLayers] = useState(true);
-  const [showSignalBrief,setShowSignalBrief] = useState(true);
+  const [showSignalBrief,setShowSignalBrief] = useState(false);
+  const [compactChrome,setCompactChrome] = useState(true);
   const [showMarkets, setShowMarkets] = useState(false);
   /* The Markets panel is pinned just below the header rather than centred on
      its rail button. Centred, a tall panel (a chart open, a long list) rose
@@ -1337,7 +1338,7 @@ export default function Dashboard() {
 
 
   return (
-    <main data-layer-rail={showLayers?'open':'closed'} className="tg-console fixed inset-0 w-full h-full bg-[var(--bg-void)] overflow-hidden">
+    <main data-density={compactChrome?'compact':'expanded'} data-layer-rail={showLayers?'open':'closed'} className="tg-console fixed inset-0 w-full h-full bg-[var(--bg-void)] overflow-hidden">
 
       <AnimatePresence onExitComplete={() => setSplashGone(true)}>
         {showSplash && <motion.div className="tg-boot-screen" initial={{opacity:1}} exit={{opacity:0}} transition={{duration:.45}}>
@@ -1545,7 +1546,7 @@ export default function Dashboard() {
         autoLocateCancelled.current = true;
         setFlyToLocation({ ...location, duration: 1800, ts: Date.now() });
       }} />
-      <CommandCenter layers={Object.values(activeLayers).filter(Boolean).length} cameras={data.cameras?.length||0} quakes={data.earthquakes?.length||0} status={backendStatus}
+      <CommandCenter compact={compactChrome} onDensity={()=>setCompactChrome(p=>!p)} layers={Object.values(activeLayers).filter(Boolean).length} cameras={data.cameras?.length||0} quakes={data.earthquakes?.length||0} status={backendStatus}
         signalsOpen={showSignalBrief} onSignals={()=>setShowSignalBrief(p=>!p)}
         onHome={()=>{autoLocateCancelled.current=true;setFlyToLocation({lat:39,lng:35,zoom:5.5,ts:Date.now()});}}
         onLayers={()=>{if(isMobile)setMobilePanel('layers');else setShowLayers(p=>!p);}}

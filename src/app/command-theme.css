@@ -8,3 +8,41 @@
 @media(prefers-reduced-motion:reduce){.tg-command-shell *,.tg-boot-screen *,.tg-layer-rail *{transition:none!important;animation:none!important}}
 .tg-map-wait{position:absolute;inset:0;pointer-events:none;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;background:radial-gradient(ellipse at 45% 40%,#17364444,transparent 70%),#0b1b25;z-index:1;padding:0 35% 30px 7%;overflow:hidden}.tg-map-wait>img{width:120%;max-width:none;margin-left:-10%;opacity:.9;max-height:calc(100% - 100px);object-fit:contain}.tg-map-wait>div{align-self:center;text-align:center;margin-top:-20px;max-width:330px}.tg-map-wait b{font:8px var(--font-hud);letter-spacing:1.7px;color:#77b1ae}.tg-map-wait p{font-size:9px;color:#547f8d;line-height:1.8;margin:10px 0}.tg-map-wait small{font-size:6px;letter-spacing:.5px;color:#3a626e}.tg-wait-pulse{display:inline-block;width:5px;height:5px;border-radius:50%;background:#61b69e;box-shadow:0 0 9px #61b69e77;margin-right:8px}.tg-layer-group-name{font-size:9px}.tg-layer-rail-title span{font-size:9px}.tg-boot-screen{z-index:9999}.tg-brief-events article:focus-within{background:#294b4c20}@media(max-width:767px){.tg-map-wait{padding:90px 0 80px;align-items:center;justify-content:center}.tg-map-wait>img{width:150%;margin-left:0;transform:translateX(8%);max-height:75%;opacity:.75}.tg-map-wait>div{padding:0 25px;margin-top:5px}.tg-map-wait b{font-size:7px;letter-spacing:1px}.tg-map-wait p{font-size:8px}}
 @media(min-width:768px){.tg-console[data-layer-rail=closed] .tg-map-stage{left:22px}.tg-console[data-layer-rail=closed] .tg-map-caption{left:40px}.tg-console[data-layer-rail=closed] .tg-view-controls,.tg-console[data-layer-rail=closed] .tg-cursor-bar{left:40px!important}}
+
+/* Map-first compact chrome. Expand from the header without losing tools. */
+.tg-density-toggle{width:32px;height:32px;display:grid;place-items:center;border:1px solid #36534f;border-radius:6px;color:#9ac5b8;background:#142922}
+.tg-density-toggle:hover{background:#23473a}.tg-density-toggle:focus-visible{outline:2px solid #5bd7ba;outline-offset:3px}
+.tg-console[data-density=compact] .tg-command-header{height:48px;padding-inline:16px;gap:18px}
+.tg-console[data-density=compact] .tg-emblem{width:29px;height:29px;border-radius:6px}
+.tg-console[data-density=compact] .tg-emblem svg{width:21px}
+.tg-console[data-density=compact] .tg-identity strong{font-size:16px;letter-spacing:2px}
+.tg-console[data-density=compact] .tg-identity small{display:none}
+.tg-console[data-density=compact] .tg-shell-actions{gap:12px;flex-direction:row-reverse}
+.tg-console[data-density=compact] .tg-analyst{display:none}
+.tg-console[data-density=compact] .tg-primary-nav{gap:10px;margin-left:12px}
+.tg-console[data-density=compact] .tg-primary-nav button{font-size:10px}
+.tg-console[data-density=compact] .tg-command-overview{height:0;padding:0}
+.tg-console[data-density=compact] .tg-overview-heading,.tg-console[data-density=compact] .tg-overview-metrics{display:none}
+.tg-console[data-density=compact] .tg-command-search{position:absolute;top:8px;right:182px;width:32px;min-width:32px;height:32px;padding:8px;margin:0}
+.tg-console[data-density=compact] .tg-command-search span,.tg-console[data-density=compact] .tg-command-search kbd{display:none}
+.tg-console[data-density=compact] .tg-map-stage{top:80px;left:72px;right:12px;bottom:40px}
+.tg-console[data-density=compact] .tg-map-caption{top:60px;left:86px;right:20px}
+.tg-console[data-density=compact] .tg-layer-rail{top:80px!important;left:12px!important;bottom:auto!important;width:48px!important;max-height:calc(100dvh - 128px);padding:6px 4px!important}
+.tg-console[data-density=compact] .tg-layer-rail-title,.tg-console[data-density=compact] .tg-layer-group-name,.tg-console[data-density=compact] .tg-layer-rail>button:after{display:none}
+.tg-console[data-density=compact] .tg-layer-group-button{height:30px!important;justify-content:center!important;padding:0!important;position:relative}
+.tg-console[data-density=compact] .tg-layer-group-button>span:last-child:not(.tg-layer-group-name){position:absolute!important;right:0;top:0;margin:0;min-width:11px;height:11px;font-size:6px;line-height:10px}
+.tg-console[data-density=compact] .tg-layer-rail>button{height:28px!important;justify-content:center!important;padding:0!important}
+.tg-console[data-density=compact] .tg-layer-flyout{left:44px!important}
+.tg-console[data-density=compact] .tg-tool-rail{top:50%!important;right:24px!important;gap:2px!important;padding:4px!important}
+.tg-console[data-density=compact] .tg-tool-rail>div>button{width:28px!important;height:28px!important}
+.tg-console[data-density=compact] .tg-view-controls{left:86px!important;bottom:60px!important}
+.tg-console[data-density=compact] .tg-cursor-bar{left:86px!important;bottom:20px!important}
+.tg-console[data-density=compact] .tugrul-workspace{top:92px!important;right:74px!important}
+.tg-console[data-density=compact] .tugrul-launch{width:36px;height:36px;padding:3px!important;justify-content:center}
+.tg-console[data-density=compact] .tugrul-launch .tg-launch-copy,.tg-console[data-density=compact] .tugrul-launch kbd,.tg-console[data-density=compact] .tugrul-launch .tg-count{display:none}
+.tg-console[data-density=compact] .tugrul-panel{max-height:calc(100dvh - 180px)!important;top:44px}
+.tg-console[data-density=compact] .tg-signal-brief{top:138px;right:74px;width:255px;max-height:calc(100dvh - 205px)}
+.tg-console[data-density=compact] .tg-sound-toggle{right:16px;bottom:13px!important}
+@media(min-width:768px){.tg-console[data-density=compact][data-layer-rail=closed] .tg-map-stage{left:12px}.tg-console[data-density=compact][data-layer-rail=closed] .tg-map-caption,.tg-console[data-density=compact][data-layer-rail=closed] .tg-view-controls,.tg-console[data-density=compact][data-layer-rail=closed] .tg-cursor-bar{left:26px!important}}
+@media(max-height:680px) and (min-width:768px){.tg-console[data-density=compact] .tg-layer-group-button{height:25px!important}.tg-console[data-density=compact] .tg-layer-rail>button{height:24px!important}.tg-console[data-density=compact] .tg-layer-rail>div.w-5{margin-block:3px!important}}
+@media(max-width:767px){.tg-density-toggle{width:30px;height:30px}.tg-console[data-density=compact] .tg-clock{display:none}.tg-console[data-density=compact] .tg-command-header{padding-inline:12px}.tg-console[data-density=compact] .tg-command-search{right:54px;top:9px;width:30px;height:30px;min-width:30px;padding:7px}.tg-console[data-density=compact] .tg-map-caption{left:17px;right:17px}.tg-console[data-density=compact] .tg-map-stage{left:8px;right:8px;bottom:65px}.tg-console[data-density=compact] .tg-view-controls{left:19px!important;bottom:83px!important}.tg-console[data-density=compact] .tugrul-workspace{right:20px!important;top:92px!important}.tg-console[data-density=compact] .tugrul-panel{max-height:calc(100dvh - 220px)!important}.tg-console[data-density=compact] .tg-sound-toggle{right:20px;bottom:79px!important}}
