@@ -44,10 +44,6 @@ Araştırma notları yalnızca tarayıcının localStorage alanında saklanır; 
 
 Sekmeli araştırma merkezi, resmi kaynak rehberi, kaynak alanı sayaçları, dosya içi Türkçe arama, güvenli JSON içe aktarma (2 MB / 200 bulgu), kimlik bazlı tekrar önleme ve Markdown raporları eklendi. Ctrl/Cmd+J araştırma merkezini açar; Escape kapatır. Kaldırma işlemi onay gerektirir. Harita katman adları Türkçeleştirildi; bu tam uygulama çevirisi değildir.
 
-## Yerel arka plan müziği
+## Arka plan müziği
 
-Sol alttaki **Arka Plan Müziği** düğmesinden kendi ses dosyalarınızı seçebilirsiniz. Birden çok parça, sonraki parça, duraklatma, ses seviyesi ve sessize alma desteklenir; liste döngüde çalar. Dosyalar sunucuya yüklenmez ve sayfa yenilendiğinde seçim sıfırlanır. En fazla 30 dosya, dosya başına 100 MB. Tarayıcı desteklediği ses biçimlerini oynatır ve ilk başlatmada kullanıcı etkileşimi gerekebilir. Siteyle birlikte ticari müzik dağıtılmaz.
-
-### Hazır YouTube müziği
-
-Kullanıcının seçtiği `WtAfwXGd_ms` videosu ve `PLqjYw0NUCsdqIRE_HMy0aXpYq3bdrg0p7` listesi müzik panelinde hazırdır. Her girişte dosya seçimi gerekmez. Resmi, görünür YouTube gizlilik geliştirilmiş iframe oynatıcısı kullanılır; indirme, ses ayırma veya yeniden barındırma yapılmaz. YouTube bağlantısı yalnızca başlatma düğmesine basıldıktan sonra yüklenir. Otomatik oynatma tarayıcı politikasına, erişim video sahibinin gömme ve bölge izinlerine bağlıdır. Panel kapandığında YouTube oynatıcısı kaldırılır ve ses durur. Bu, görünmez veya ekran kapalı YouTube oynatma uygulaması değildir.
+Kullanıcının yüklediği `public/videoplayback.mp3` doğrudan, %30 sesle ve döngüde oynatılır. Müzik sekmesi, dosya seçimi veya YouTube oynatıcısı yoktur. Sayfa açılırken otomatik oynatma denenir; tarayıcı izin vermezse ilk tıklama/dokunma veya tuş etkileşiminde yeniden denenir. Bu nedenle etkileşimsiz sesli başlangıç her tarayıcıda garanti edilmez. Sol alttaki küçük ses düğmesi müziği durdurur/başlatır. Kullanıcı düğmeyle durdurduğunda sonraki sayfa etkileşimleri müziği tekrar başlatmaz. Sayfa yenilendiğinde başlangıç yeniden denenir. Ses dosyası artık sitenin herkese açık statik içeriğidir.
