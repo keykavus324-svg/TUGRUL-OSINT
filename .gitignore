@@ -71,3 +71,6 @@ scanner_backend_backup.js
 # Previous prototype output and local runtime artifacts
 /dist/
 /off
+
+# Ignore dependencies in every workspace
+node_modules/
