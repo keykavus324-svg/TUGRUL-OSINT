@@ -72,3 +72,21 @@ Haritanın sağ üstündeki **kutucuklar ikonundan Araç Merkezi** açılır. Va
 12. Doğrulama masası: oturumluk analist kontrol listesi, Markdown çıktı, UTC → Türkiye/Unix dönüşümü.
 
 Detaylar ve veri sınırları: [Analyst Suite](docs/ANALYST-SUITE.md).
+
+## v0.5 · RECON+ Suite — açık kaynak OSINT entegrasyonları
+
+RECON panelindeki **RECON+ SUITE** düğmesi dokuz modüllük bir keşif çalışma alanı açar: DOSSIER, SUBDOMAINS, FINGERPRINT, TLS, URL HARVEST, DORKS, EMAIL, MEDIA META ve SOURCES. Hepsi yerinde çalışır — harici tarayıcı servisi, API anahtarı veya veritabanı gerekmez.
+
+- **DOSSIER** tek bir tohumdan (alan adı, URL, e-posta, IP veya kullanıcı adı) ilgili tüm modülleri çalıştırır; her modül kendi durumunu ve süresini bildirir, ağırlıklı risk rubriği ve ilişki grafiği üretir.
+- **SUBDOMAINS** yedi pasif kaynağı birleştirir, kaynak başına atıf tutar ve isteğe bağlı çözümleme/HTTP yoklaması yapar.
+- **FINGERPRINT** yığın imzaları, güvenlik başlığı denetimi, çerez bayrakları, robots.txt, security.txt, Shodan uyumlu favicon hash'i ve üçüncü taraf host'ları çıkarır.
+- **TLS** canlı el sıkışma yapar, zinciri ve SAN'ları listeler, expiry/zayıf şifre temelli A–F notu verir.
+- **URL HARVEST** Wayback, Common Crawl ve OTX'i tarar; açığa çıkan yapılandırma/yedek/anahtar dosyalarını öne çıkarır.
+- **DORKS** ~30 şablonu kategori ve riske göre üretir; hiçbir şey kazınmaz, bağlantılar tarayıcınızda açılır.
+- **EMAIL** Gravatar, ihlal korpusu, itibar, alan adı yaşı ve SPF/DMARC/DKIM duruşunu birleştirir. Hesap varlığı yoklaması bilinçli olarak yoktur.
+- **MEDIA META** JPEG/PNG/TIFF/PDF etiketlerini ve GPS'i **tarayıcıda** okur; dosya hiçbir sunucuya yüklenmez.
+- **SOURCES** entegre edilen 16 açık kaynak projenin lisansını ve ne alındığını listeler.
+
+RECON panelinin kendi SUBDOMAINS / HEADERS / TECH DETECT / SSL ve VULN SWEEP sekmeleri de artık aynı motora bağlıdır; `SCANNER_URL` zorunlu değildir.
+
+Ayrıntılar, lisans tablosu ve doğruluk sınırları: [RECON+ Suite](docs/RECON-SUITE.md).
