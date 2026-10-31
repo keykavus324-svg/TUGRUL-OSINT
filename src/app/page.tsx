@@ -161,7 +161,7 @@ const newsTransform = (d: { news?: unknown[]; sources?: unknown[]; timestamp?: s
 });
 
 /* One version label for the splash and the header, which used to disagree. */
-const APP_VERSION = 'TUĞRUL / 0.4';
+const APP_VERSION = 'TUĞRUL / 0.5';
 
 /* The splash reports what has actually happened. The last stage waits for
    the map's first finished frame instead of a fixed timer. */
@@ -1343,7 +1343,7 @@ export default function Dashboard() {
 
       <AnimatePresence onExitComplete={() => setSplashGone(true)}>
         {showSplash && <motion.div className="tg-boot-screen" initial={{opacity:1}} exit={{opacity:0}} transition={{duration:.45}}>
-          <div className="tg-boot-grid"/><div className="tg-boot-label">TUĞRUL INTELLIGENCE SYSTEM / 0.4</div>
+          <div className="tg-boot-grid"/><div className="tg-boot-label">TUĞRUL INTELLIGENCE SYSTEM / 0.5</div>
           <div className="tg-boot-logo"><Radar size={55} strokeWidth={.8}/></div>
           <div className="tg-boot-eyebrow">AÇIK KAYNAK. GENİŞ PERSPEKTİF.</div><h1>TUĞRUL<span>OSİNT</span></h1>
           <p>Görünenden fazlasını keşfet.</p><div className="tg-boot-progress"><motion.i animate={{width:SPLASH_PROGRESS[splashStage]}}/></div>
