@@ -527,17 +527,117 @@ export const API_GROUPS: ApiGroup[] = [
         returns: ['target_ip', '…sweep results'],
         notes: 'Only sweep ranges you are authorised to test.',
       },
+      {
+        path: '/api/osint/subdomains',
+        method: 'GET',
+        summary: 'Passive subdomain enumeration across seven public sources, with optional resolution and HTTP probing.',
+        params: [
+          { name: 'domain', required: true, desc: 'Registrable domain to enumerate.', example: 'example.com' },
+          { name: 'brute', desc: 'Adds a 150-label DNS wordlist tier on top of the passive sources.', example: '1' },
+          { name: 'quick', desc: 'Skips the archive tier — faster, fewer hosts.', example: '1' },
+          { name: 'resolve', desc: 'Set to 0 to skip A/AAAA resolution entirely.', example: '0' },
+          { name: 'probe', desc: 'How many resolved hosts to probe over HTTP (0–80, default 40).', example: '20' },
+        ],
+        returns: ['domain', 'hits', 'total', 'live', 'sources', 'brute', 'elapsedMs', 'notes'],
+        notes:
+          'crt.sh, Cert Spotter, OTX, HackerTarget, RapidDNS, Wayback CDX and urlscan.io. Every source reports its own status, so a failed source is never indistinguishable from a host that does not exist. Rate limit: 6/min per IP.',
+      },
+      {
+        path: '/api/osint/webtech',
+        method: 'GET',
+        summary: 'Fingerprints a live page: stack signatures, security-header audit, cookie flags, robots.txt, security.txt, favicon hash and third-party hosts.',
+        params: [{ name: 'url', required: true, desc: 'Page to fingerprint. A bare host is upgraded to https.', example: 'https://example.com' }],
+        returns: ['requestedUrl', 'finalUrl', 'status', 'title', 'server', 'technologies', 'headerAudit', 'cookies', 'favicon', 'robots', 'securityTxt', 'externalHosts', 'elapsedMs'],
+        notes:
+          'One request to the target; everything else is derived locally. Private and loopback targets are refused. A failed fetch returns 200 with a `warning` — that is a finding about the target, not this service. Rate limit: 20/min per IP.',
+      },
+      {
+        path: '/api/osint/tls',
+        method: 'GET',
+        summary: 'Performs a live TLS handshake and grades the certificate chain, expiry and cipher suite.',
+        params: [
+          { name: 'host', required: true, desc: 'Hostname or address to connect to.', example: 'example.com' },
+          { name: 'port', desc: 'TCP port (default 443).', example: '8443' },
+        ],
+        returns: ['host', 'port', 'connected', 'protocol', 'cipher', 'authorized', 'subject', 'issuer', 'san', 'validFrom', 'validTo', 'daysRemaining', 'chain', 'grade', 'issues', 'fingerprintSha256'],
+        notes:
+          'Verification is reported, not enforced — an expired or self-signed certificate is a finding, not a failed request. Grade is A–F, or U when no handshake completed. Rate limit: 20/min per IP.',
+      },
+      {
+        path: '/api/osint/urls',
+        method: 'GET',
+        summary: 'Harvests historical URLs from the Wayback Machine, Common Crawl and OTX, then classifies them by what they expose.',
+        params: [
+          { name: 'domain', required: true, desc: 'Domain whose history to harvest.', example: 'example.com' },
+          { name: 'quick', desc: 'Skips Common Crawl.', example: '1' },
+          { name: 'limit', desc: 'Maximum URLs returned (50–6000, default 2000).', example: '500' },
+        ],
+        returns: ['domain', 'urls', 'findings', 'byExtension', 'sources', 'elapsedMs', 'notes', 'truncated'],
+        notes:
+          'Historical only — a listed path may no longer exist. Findings rank config/backup/key exposures above admin surfaces. Rate limit: 6/min per IP.',
+      },
+      {
+        path: '/api/osint/dorks',
+        method: 'GET',
+        summary: 'Builds search-engine dorks for a domain from a curated ~30-template catalogue.',
+        params: [
+          { name: 'target', required: true, desc: 'Domain to build queries for.', example: 'example.com' },
+          { name: 'category', desc: 'Comma-separated categories to include.' },
+          { name: 'maxRisk', desc: 'Highest risk level to return: info, medium, high.', example: 'medium' },
+        ],
+        returns: ['target', 'total', 'categories', 'dorks', 'note'],
+        notes: 'Pure computation — nothing is scraped. Each dork carries ready-made Google, Bing, DuckDuckGo and Yandex links plus the reason it exists. Rate limit: 60/min per IP.',
+      },
+      {
+        path: '/api/osint/email',
+        method: 'GET',
+        summary: 'Investigates an address: Gravatar, breach corpus, reputation, domain age and the mail domain’s own SPF/DMARC/DKIM posture.',
+        params: [
+          { name: 'email', required: true, desc: 'Address to investigate.', example: 'test@example.com' },
+          { name: 'quick', desc: 'Skips the slower sources.', example: '1' },
+        ],
+        returns: ['address', 'domain', 'provider', 'mx', 'spf', 'dmarc', 'dkim', 'gravatar', 'breaches', 'reputation', 'domainAge', 'flags', 'risk', 'notes'],
+        notes:
+          'No recovery-flow probing: the account exists/does not exist trick is indistinguishable from credential stuffing and is deliberately not implemented. `EMAILREP_API_KEY` adds reputation detail; the keyless path still works. Rate limit: 10/min per IP.',
+        env: ['EMAILREP_API_KEY'],
+      },
+      {
+        path: '/api/osint/vulns',
+        method: 'GET',
+        summary: 'Correlates detected technologies — by version where possible — with known CVEs.',
+        params: [
+          { name: 'url', desc: 'Fingerprint this page first, then look up its stack.', example: 'https://example.com' },
+          { name: 'product', desc: 'Look up one product directly instead of fingerprinting a page.', example: 'nginx' },
+          { name: 'version', desc: 'Version for `product`. Version matches rank above product-only matches.' },
+        ],
+        returns: ['target', 'technologies', 'vulnerabilities', 'total', 'confirmed', 'risk_level', 'notes'],
+        notes:
+          'Returns a flat `vulnerabilities[]` shaped for the toolkit’s VULN SWEEP renderer. Unknown products get a 400 listing the mapped products; unmapped does not mean vulnerable or safe. Rate limit: 10/min per IP.',
+      },
+      {
+        path: '/api/osint/dossier',
+        method: 'GET',
+        summary: 'Builds a full dossier for one seed: domain, URL, email, IPv4/IPv6 address or handle.',
+        params: [
+          { name: 'target', required: true, desc: 'Seed to investigate.', example: 'example.com' },
+          { name: 'quick', desc: 'Skips the archive and subdomain tiers.', example: '1' },
+          { name: 'brute', desc: 'Adds the DNS wordlist tier.', example: '1' },
+        ],
+        returns: ['seed', 'generatedAt', 'modules', 'graph', 'risk', 'summary', 'notes', 'elapsedMs', 'integrations'],
+        notes:
+          'Modules run in dependency order (fingerprint → TLS/subdomains/URLs → dorks → CVEs) and each reports ok/error/skipped with its own timing. Risk is a weighted rubric capped at 100 — critical ≥70, high ≥45, medium ≥20. Rate limit: 4/min per IP; a full dossier can take a minute.',
+      },
     ],
   },
   {
     id: 'recon',
     title: 'Recon Scanner',
-    blurb: 'Active scanning, delegated to a separate backend so the web tier never runs scans itself.',
+    blurb: 'The RECON toolkit’s compatibility endpoint. Runs in-process against the same engine as /api/osint/*, so no external scanner service is required.',
     endpoints: [
       {
         path: '/api/scanner',
         method: 'GET',
-        summary: 'Runs a scan against a target via the OSIRIS scanner backend.',
+        summary: 'Runs a scan in-process — the RECON toolkit’s compatibility endpoint.',
         params: [
           {
             name: 'type',
@@ -547,10 +647,9 @@ export const API_GROUPS: ApiGroup[] = [
           },
           { name: 'target', required: true, desc: 'Host, domain, or address to scan.' },
         ],
-        returns: ['detail', 'hint', 'failed', 'error'],
-        env: ['SCANNER_URL', 'SCANNER_KEY'],
+        returns: ['target', 'url', 'status', 'title', 'server', 'technologies', 'security_grade', 'tls_grade', '…type-specific fields'],
         notes:
-          'Returns 503 when `SCANNER_URL` / `SCANNER_KEY` are unset — that is the supported way to disable RECON. `SCANNER_KEY` must equal the backend’s `OSIRIS_KEY`.',
+          'Each branch returns the superset of fields the toolkit’s existing renderers read, so the tabs work without a separate scanner deployment. Private/loopback targets are refused. Rate limit: 20/min per IP. `SCANNER_URL` is no longer required.',
       },
     ],
   },

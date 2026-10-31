@@ -1,9 +1,20 @@
-import { describe, it, expect, vi, afterEach, beforeEach } from 'vitest';
+import { describe as suite, it, expect, vi, afterEach, beforeEach } from 'vitest';
 import { createRequire } from 'node:module';
 import type { AddressInfo } from 'node:net';
 
-// The intel service is plain CommonJS; required here it exports its pieces without starting.
-const intel = createRequire(import.meta.url)('./server.js');
+// The intel service is plain CommonJS; required here it exports its pieces
+// without starting. It lives in its own package, so its dependencies arrive
+// with `npm --prefix intel ci` — without them the suite skips rather than
+// failing the whole run on a missing `express`.
+/* eslint-disable-next-line @typescript-eslint/no-explicit-any -- CommonJS surface, shape asserted by the tests below */
+const intel: any = (() => {
+  try {
+    return createRequire(import.meta.url)('./server.js');
+  } catch {
+    return null;
+  }
+})();
+const describe = suite.skipIf(!intel);
 
 const CSV = (rows: string[]) => ['id,schema,name,aliases,countries,program_ids,sanctions', ...rows].join('\n');
 const goodCsv = CSV(['NK-1,Company,Example Sanctioned Company,,ir,SDGT,OFAC']);

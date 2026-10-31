@@ -218,14 +218,30 @@ export async function safeFetch(
 // In-memory rate limiting per-isolate for basic proxy abuse prevention
 const rateMap = new Map<string, { count: number; resetAt: number }>();
 
-export function isRateLimited(ip: string, limit: number = 20, windowMs: number = 60_000): boolean {
+/**
+ * Count one call against a caller's budget.
+ *
+ * `scope` keeps routes from spending each other's budget. Without it every
+ * route on the deployment shares a single counter per address, so a burst of
+ * cheap lookups makes an expensive route answer 429 even though it has not
+ * been called once — and the strictest limit on the platform effectively
+ * applies to everything. Callers that do not pass a scope keep the original
+ * shared bucket, so this stays backwards compatible.
+ */
+export function isRateLimited(
+  ip: string,
+  limit: number = 20,
+  windowMs: number = 60_000,
+  scope: string = 'default',
+): boolean {
   const now = Date.now();
   for (const [key, entry] of rateMap) {
     if (now > entry.resetAt) rateMap.delete(key);
   }
-  const entry = rateMap.get(ip);
+  const key = `${scope}:${ip}`;
+  const entry = rateMap.get(key);
   if (!entry || now > entry.resetAt) {
-    rateMap.set(ip, { count: 1, resetAt: now + windowMs });
+    rateMap.set(key, { count: 1, resetAt: now + windowMs });
     return false;
   }
   entry.count++;

@@ -9,13 +9,14 @@ import {
   ChevronDown, ChevronUp, Loader2, AlertTriangle, Server,
   Lock, MapPin, Bug, Wifi, Code, Layers, Network, Fingerprint,
   CheckCircle, XCircle, Clock, ExternalLink, Crosshair,
-  Maximize2, Minimize2, Gavel, Bitcoin, Phone, Terminal, ShieldAlert, User
+  Maximize2, Minimize2, Gavel, Bitcoin, Phone, Terminal, ShieldAlert, User, Sparkles
 } from 'lucide-react';
 import { ipToNumber, numberToIp, calculateSubnetStart, classifyDevice, assessRisk, batchFetch, ShodanInternetDBResponse, SweepDevice } from '@/lib/osint-utils';
 import ChainBrief from '@/components/ChainBrief';
 import FingerprintSearch, { useFingerprintSearch } from '@/components/FingerprintSearch';
 import DonBotScan from '@/components/DonBotScan';
 import DigitalDonMark from '@/components/DigitalDonMark';
+import ReconSuite from '@/components/ReconSuite';
 
 /**
  * Tool groups. At 19 modules a flat grid forces 8px truncated labels
@@ -129,6 +130,8 @@ function OsintPanelInner({ isMobile, onSweepVisualize, onScanGeolocate }: OsintP
   const fingerprint = useFingerprintSearch();
   /** DonBot's open token, kept for the same reason; its frame reloads on the remount, on the same token. */
   const [donbotQuery, setDonbotQuery] = useState<string | null>(null);
+  /** RECON+ is a workspace of its own — it opens over this panel rather than inside it. */
+  const [suiteOpen, setSuiteOpen] = useState(false);
 
   const selectTool = useCallback((id: string) => {
     setActiveTab(id);
@@ -1116,6 +1119,102 @@ function OsintPanelInner({ isMobile, onSweepVisualize, onScanGeolocate }: OsintP
 
 
 
+    // ── SECURITY HEADERS ──
+    if (activeTab === 'headers') {
+      const findings: any[] = Array.isArray(r.findings) ? r.findings : [];
+      const missing: string[] = Array.isArray(r.missing) ? r.missing : [];
+      const disclosures: string[] = Array.isArray(r.disclosures) ? r.disclosures : [];
+      if (findings.length === 0) return renderFallback();
+      return (
+        <div>
+          <SectionHeader title="SECURITY HEADERS" icon={Code} color="#87CEEB" />
+          <ResultRow label="URL" value={r.url || r.target} color="#87CEEB" />
+          <ResultRow label="HTTP" value={r.status} />
+          <ResultRow label="Title" value={r.title} />
+          <ResultRow label="Grade" value={r.grade ? `${r.grade} (${r.score}/100)` : r.score} color={
+            r.grade === 'A' ? '#00E676' : r.grade === 'B' ? '#FFD700' : r.grade === 'C' ? '#FF9500' : '#FF3D3D'
+          } />
+          <ResultRow label="Missing" value={missing.length ? missing.join(', ') : 'none'} color={missing.length ? '#FF9500' : '#00E676'} />
+          {disclosures.length > 0 && <ResultRow label="Discloses" value={disclosures.join(', ')} color="#FFD700" />}
+          <div className="mt-2 space-y-1">
+            {findings.map((f: any) => (
+              <div key={f.header} className="flex items-start gap-2 px-2 py-1 rounded border border-[var(--border-primary)]/60 bg-[var(--bg-primary)]/30">
+                <span className="w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0" style={{
+                  background: f.state === 'ok' ? '#00E676' : f.state === 'missing' ? '#FF3D3D' : f.state === 'obsolete' ? '#8A8880' : '#FF9500',
+                }} />
+                <div className="min-w-0 flex-1">
+                  <div className="text-[11px] font-mono text-[var(--text-primary)]">{f.header}</div>
+                  <div className="text-[10px] font-mono text-[var(--text-muted)] leading-snug break-words">{f.detail}</div>
+                </div>
+                <span className="text-[9px] font-mono uppercase flex-shrink-0" style={{ color: f.severity === 'high' ? '#FF3D3D' : f.severity === 'medium' ? '#FF9500' : '#8A8880' }}>{f.severity}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    // ── TECH DETECT ──
+    if (activeTab === 'tech') {
+      const tech: any[] = Array.isArray(r.technologies) ? r.technologies : [];
+      return (
+        <div>
+          <SectionHeader title="TECHNOLOGY FINGERPRINT" icon={Code} color="#9C27B0" />
+          <ResultRow label="URL" value={r.url || r.target} color="#9C27B0" />
+          <ResultRow label="HTTP" value={r.status} />
+          <ResultRow label="Title" value={r.title} />
+          <ResultRow label="Server" value={r.server} />
+          {r.favicon?.hash !== undefined && <ResultRow label="Favicon Hash" value={String(r.favicon.hash)} />}
+          <ResultRow label="security.txt" value={r.security_txt === undefined ? undefined : r.security_txt ? 'present' : 'absent'} />
+          {tech.length === 0 && <div className="text-[11px] font-mono text-[var(--text-muted)] py-2">No signature matched — not proof of a custom stack.</div>}
+          <div className="mt-2 flex flex-wrap gap-1">
+            {tech.map((t: any) => (
+              <span key={t.name} title={Array.isArray(t.evidence) ? t.evidence.join('\n') : undefined}
+                className="px-1.5 py-0.5 rounded border text-[10px] font-mono"
+                style={{
+                  borderColor: t.confidence === 'high' ? '#9C27B055' : '#8A888033',
+                  color: t.confidence === 'high' ? '#e6b7ff' : '#b9b7ae',
+                  background: t.confidence === 'high' ? '#9C27B010' : 'transparent',
+                }}>
+                {t.name}{t.version ? ` ${t.version}` : ''}
+              </span>
+            ))}
+          </div>
+          {(r.external_hosts || []).length > 0 && (
+            <ResultRow label="3rd-party" value={(r.external_hosts as string[]).slice(0, 8).join(', ')} />
+          )}
+        </div>
+      );
+    }
+
+    // ── SUBDOMAINS ──
+    if (activeTab === 'subdomains') {
+      const hosts: any[] = Array.isArray(r.hosts) ? r.hosts : [];
+      const sources: any[] = Array.isArray(r.sources) ? r.sources : [];
+      return (
+        <div>
+          <SectionHeader title="SUBDOMAIN ENUMERATION" icon={Layers} color="#00BCD4" />
+          <ResultRow label="Domain" value={r.domain || query} color="#00BCD4" />
+          <ResultRow label="Hosts" value={r.total ?? hosts.length} />
+          <ResultRow label="Resolved" value={r.live} color="#00E676" />
+          {sources.length > 0 && <ResultRow label="Sources" value={sources.map((s: any) => `${s.label || s.id}:${s.status}`).join(' · ')} />}
+          <div className="mt-2 max-h-64 overflow-y-auto styled-scrollbar divide-y divide-[var(--border-secondary)]/30">
+            {hosts.map((h: any) => (
+              <div key={h.host} className="flex items-center gap-2 py-1">
+                <span className="text-[11px] font-mono text-[var(--text-primary)] truncate flex-1">{h.host}</span>
+                <span className="text-[9px] font-mono text-[var(--cyan-primary)] flex-shrink-0">{(h.ips || []).join(' ')}</span>
+                <span className="text-[9px] font-mono text-[var(--text-muted)] flex-shrink-0">{(h.sources || []).join(', ')}</span>
+              </div>
+            ))}
+            {hosts.length === 0 && <div className="text-[11px] font-mono text-[var(--text-muted)] py-2">No host was found in the passive sources.</div>}
+          </div>
+          {(r.notes || []).map((n: string, i: number) => (
+            <div key={i} className="text-[10px] font-mono text-[var(--text-muted)] leading-snug mt-1">— {n}</div>
+          ))}
+        </div>
+      );
+    }
+
     // Fallback for other tools
     return renderFallback();
   };
@@ -1268,6 +1367,14 @@ function OsintPanelInner({ isMobile, onSweepVisualize, onScanGeolocate }: OsintP
         </div>
         {/* Toolkit — grouped so 19 modules stay scannable, and at 4 columns
             every label fits without truncation. */}
+        {/* RECON+ opens the full workspace: dossier, archives, TLS, sources. */}
+        <button onClick={() => setSuiteOpen(true)}
+          className="w-full mt-2 py-2.5 rounded-lg border flex items-center justify-center gap-2 transition-all bg-[#0D0D0C] hover:bg-[var(--hover-accent)]"
+          style={{ borderColor: 'rgba(91, 215, 186, 0.28)' }}>
+          <Sparkles className="w-4 h-4" style={{ color: 'var(--gold-primary)' }} />
+          <span className="font-mono font-bold tracking-[0.1em] text-[10px]" style={{ color: 'var(--gold-primary)' }}>RECON+ SUITE</span>
+          <span className="text-[8px] font-mono tracking-wider text-[var(--text-muted)]">DOSSIER · ARCHIVES · TLS · 16 SOURCES</span>
+        </button>
         <div className="mt-2">
           <div className="relative mb-1.5">
             <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3 h-3 text-[var(--text-muted)]" />
@@ -1664,6 +1771,8 @@ function OsintPanelInner({ isMobile, onSweepVisualize, onScanGeolocate }: OsintP
           ))}
         </div>
       )}
+
+      <ReconSuite open={suiteOpen} onClose={() => setSuiteOpen(false)} initialTarget={query.trim() || undefined} />
     </div>
   );
 
