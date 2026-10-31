@@ -68,6 +68,20 @@ const nextConfig: NextConfig = {
           { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
         ],
       },
+      /* Documents must never be held stale. A page that is cached past a
+         deployment keeps showing the previous build — the splash says the old
+         version and the new panels look absent — even though the deployment
+         behind the alias has changed. Revalidation costs one conditional
+         request and makes "did the update land?" answerable from the page
+         itself. Only HTML is affected; API responses and assets keep their
+         own caching. */
+      {
+        source: '/:path*',
+        has: [{ type: 'header', key: 'accept', value: '.*text/html.*' }],
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=0, must-revalidate' },
+        ],
+      },
       {
         source: '/(.*)',
         headers: [
