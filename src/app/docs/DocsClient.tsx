@@ -404,8 +404,8 @@ docker compose up -d`}</Pre>
             <div className="space-y-2">
               {[
                 {
-                  k: 'SCANNER_URL / SCANNER_KEY',
-                  v: 'Points at the separate RECON scanner backend. SCANNER_KEY must equal that backend’s OSIRIS_KEY. Leave both empty to disable RECON — /api/scanner then returns 503 by design.',
+                  k: 'SCANNER_URL / SCANNER_KEY (legacy, optional)',
+                  v: 'Left over from the era of a separate scanner backend. RECON+ now runs in-process against /api/scanner and /api/osint/*, so nothing here is required: leave both empty and every tab still works. Set them only to forward to an external service you control.',
                 },
                 {
                   k: 'SDK_INGEST_KEY',
@@ -457,6 +457,10 @@ docker compose up -d`}</Pre>
                 {
                   k: 'RECON Toolkit',
                   v: 'DNS, WHOIS, certificate transparency, IP and ASN enrichment, breach checks, sanctions, CVE lookup, port scanning.',
+                },
+                {
+                  k: 'RECON+ Suite',
+                  v: 'Nine workspaces in one panel: a whole-target dossier with a risk verdict and link graph, passive subdomains, web fingerprint and header audit, live TLS grading, historical URL harvesting, dork catalogue, e-mail exposure, in-browser media metadata, and the licence record of every open-source technique used.',
                 },
                 {
                   k: 'Intel Feed',
